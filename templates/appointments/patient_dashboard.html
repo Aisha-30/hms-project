@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}Patient Dashboard{% endblock %}
+{% block content %}
+<h2 style="margin-bottom:1rem">Welcome, {{ request.user.get_full_name }}</h2>
+
+{% if my_bookings %}
+<div class="card">
+    <h3 style="margin-bottom:1rem">Your Confirmed Bookings</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Doctor</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for booking in my_bookings %}
+            <tr>
+                <td>Dr. {{ booking.slot.doctor.get_full_name }}</td>
+                <td>{{ booking.slot.date }}</td>
+                <td>{{ booking.slot.start_time|time:"H:i" }} – {{ booking.slot.end_time|time:"H:i" }}</td>
+                <td><span class="badge badge-confirmed">{{ booking.status }}</span></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+<div class="card">
+    <h3 style="margin-bottom:1rem">Available Appointments</h3>
+    {% if available_slots %}
+    <table>
+        <thead>
+            <tr>
+                <th>Doctor</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for slot in available_slots %}
+            <tr>
+                <td>Dr. {{ slot.doctor.get_full_name }}</td>
+                <td>{{ slot.date }}</td>
+                <td>{{ slot.start_time|time:"H:i" }} – {{ slot.end_time|time:"H:i" }}</td>
+                <td>
+                    <form method="post" action="/appointments/patient/book/{{ slot.id }}/">
+                        {% csrf_token %}
+                        <button class="btn btn-success" style="padding:0.3rem 0.8rem;font-size:0.85rem">Book</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p style="color:#888">No available slots right now. Check back later.</p>
+    {% endif %}
+</div>
+{% endblock %}

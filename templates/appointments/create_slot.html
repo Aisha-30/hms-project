@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Add Slot{% endblock %}
+{% block content %}
+<div class="card" style="max-width:480px;margin:auto">
+    <h2 style="margin-bottom:1.5rem">Add Availability Slot</h2>
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <label>{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+                <p style="color:red;font-size:0.8rem">{{ field.errors }}</p>
+            {% endif %}
+        {% endfor %}
+        {% if form.non_field_errors %}
+            <p style="color:red;font-size:0.85rem">{{ form.non_field_errors }}</p>
+        {% endif %}
+        <button class="btn btn-primary" type="submit" style="margin-top:0.5rem">Save Slot</button>
+        <a href="/appointments/doctor/" class="btn btn-secondary" style="margin-left:0.5rem">Cancel</a>
+    </form>
+</div>
+{% endblock %}
